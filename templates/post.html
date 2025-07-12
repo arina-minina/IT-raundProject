@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Добавьте своё любимое место
+{% endblock %}
+
+{% block content %}
+<h1>Добавь новое место!</h1>
+<p>Здесь вы можете поделиться впечатлениями о месте в котором вы были, но которого еще нет на сайте.</p>
+
+<form method="post" class="form-post" enctype="multipart/form-data">
+    <input type="text" name="title" placeholder="Введите название места" class="form-post">
+    <input type="text" name="address" placeholder="Введите адрес места" class="form-post"><br><br>
+    <input type="text" name="category" placeholder="Введите категорию" class="form-post">
+    <input type="file" name="image" placeholder="Выберите картинку" class="form-post"><br><br>
+    <input type="text" name="description" placeholder="Опишите место" class="form-post">
+    <button class="btn-btn-success" type="submit">Добавить</button>
+</form>
+{% endblock %}

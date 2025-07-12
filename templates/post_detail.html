@@ -1,0 +1,34 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ post.title }}{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row">
+        <div class="title_posts">
+            <h1>{{ post.title }}</h1>
+            <p class="text-muted">Категория: {{ post.category }}</p></div>
+        <div class="img-and-description">
+            {% if post.image_name %}
+            <img src="{{ url_for('static', filename='uploads/' + post.image_name) }}"
+                 class="img-fluid rounded mb-4"
+                 alt="{{ post.title }}">
+            {% endif %}
+            <p>{{ post.description }}<br><br>
+            <div class="btn-btn-btn">
+                <a href="{{ url_for('show_reviews', post_id=post.id) }}" class="btn btn-primary mt-3">Посмотреть все отзывы</a>
+            </div>
+            </p>
+        </div>
+
+        <div class="adres">
+            <h3>Адрес</h3>
+            <p>{{ post.address }}</p></div>
+        <div>
+            <a href="{{ url_for('index') }}" class="btn btn-primary mt-3">
+                Назад к списку мест
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}

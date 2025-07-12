@@ -1,0 +1,38 @@
+.place {
+    padding: 30px;
+}
+
+header {
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    background: white;
+}
+
+.title_posts {
+    text-align: center;
+}
+.img-and-description {
+    position: relative;
+    padding-left: 320px;
+    min-height: 200px;
+}
+
+.img-and-description img {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 300px;
+}
+
+.img-and-description p {
+    margin-left: 20px;
+}
+
+.adres {
+    padding-top: 20px;
+}
+
+.btn-btn-btn {
+    float: right;
+}

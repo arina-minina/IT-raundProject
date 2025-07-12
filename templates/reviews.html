@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Отзывы о {{ post.title }}
+{% endblock %}
+
+{% block content %}
+<div class="rew">
+    <h1>Отзывы о {{ post.title }}</h1>
+
+    <div class="mb-4">
+        <a href="{{ url_for('show_post', post_id=post.id) }}" class="btn btn-primary mt-3">
+            Назад
+        </a>
+    </div>
+    <div class="alert alert-info">
+        Отзывы пока отсутствуют. Будьте первым!
+    </div>
+
+</div>
+
+{% endblock %}

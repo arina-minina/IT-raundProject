@@ -1,0 +1,68 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Куда сходить в Сириусе?
+{% endblock %}
+
+{% block content %}
+<h1>Посмотри, куда можно сходить!</h1>
+<p>Здесь отображаются места, которые можно посетить, находясь в Сириусе.</p>
+
+
+<div class="row mb-2">
+
+    {% for post in index %}
+    <div class="col-md-6">
+        <div class="row g-0 border rounded overflow-hidden flex-md-row mb-4 shadow-sm h-md-250 position-relative">
+            <div class="col p-4 d-flex flex-column position-static"><strong
+                    class="d-inline-block mb-2 text-primary-emphasis">
+                <ya-tr-span data-index="19-0" data-translated="true" data-source-lang="en" data-target-lang="ru"
+                            data-value="Category" data-translation="Категория" data-ch="1" data-type="trSpan"
+                            style="visibility: inherit !important;">{{ post.category }}
+                </ya-tr-span>
+            </strong>
+                <h3 class="mb-0">
+                    <ya-tr-span data-index="20-0" data-translated="true" data-source-lang="en" data-target-lang="ru"
+                                data-value="name_place" data-translation="Название места" data-ch="0"
+                                data-type="trSpan" style="visibility: inherit !important;">{{ post.title }}
+                    </ya-tr-span>
+                </h3><br>
+                <p class="card-text mb-auto">
+                    <ya-tr-span data-index="22-0" data-translated="true" data-source-lang="en" data-target-lang="ru"
+                                data-value="address"
+                                data-translation="Адрес"
+                                data-ch="0" data-type="trSpan" style="visibility: inherit !important;">{{ post.address
+                        }}
+                    </ya-tr-span>
+                </p>
+                <a href="{{ url_for('show_post', post_id=post.id) }}" class="icon-link gap-1 icon-link-hover stretched-link">
+                    <ya-tr-span data-index="23-0" data-translated="true" data-source-lang="en" data-target-lang="ru"
+                                data-value="dalee" data-translation="Узнать подробнее" data-ch="0"
+                                data-type="trSpan" style="visibility: inherit !important;">Узнать подробнее
+                    </ya-tr-span>
+                    <svg class="bi" aria-hidden="true">
+                        <use xlink:href="#chevron-right"></use>
+                    </svg>
+                </a></div>
+            <div class="col-auto d-none d-lg-block">
+                {% if post.image_name %}
+                <img src="{{ url_for('static', filename='uploads/' + post.image_name) }}"
+                     class="bd-placeholder-img"
+                     width="200"
+                     height="250"
+                     style="object-fit: cover; display: block;"
+                     alt="{{ post.title }}">
+                {% else %}
+                <svg class="bd-placeholder-img" width="200" height="250" xmlns="http://www.w3.org/2000/svg" role="img"
+                     aria-label="Placeholder" preserveAspectRatio="xMidYMid slice">
+                    <title>Placeholder</title>
+                    <rect width="100%" height="100%" fill="#55595c"></rect>
+                    <text x="50%" y="50%" fill="#eceeef" dy=".3em">Без картинки</text>
+                </svg>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}
