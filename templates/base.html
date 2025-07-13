@@ -3,83 +3,89 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet"
-          integrity="sha384-LN+7fdVzj6u52u30Kp6M/trliBMCMKTyK833zpbD+pXdCLuTusPj697FH4R/5mcr" crossorigin="anonymous">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
     <title>{% block title %}{% endblock %}</title>
+    <style>
+        /* стилизуем теговые кнопки фильтров */
+        .filter-label {
+            padding: 5px 15px;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: 1px solid #dee2e6;
+            margin-right: 10px;
+        }
+        .filter-label:hover {
+            background-color: #f8f9fa; /* легкое подсвечивание при наведении курсора */
+        }
+        .filter-radio:checked + .filter-label {
+            background-color: #0d6efd;
+            color: white;
+            border-color: #0d6efd;
+        }
+        /* скрытие радиокнопок */
+        .filter-radio {
+            display: none;
+        }
+        .place-item {
+            transition: all 0.3s ease; /* плавные изменения свойств */
+        }
+    </style>
 </head>
 <body>
 <div class="main_container">
     <header class="p-3 mb-3 border-bottom">
         <div class="container">
-            <div class="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start"><a href="/"
-                                                                                                                class="d-flex align-items-center mb-2 mb-lg-0 link-body-emphasis text-decoration-none">
-                <svg class="bi me-2" width="40" height="32" role="img" aria-label="Bootstrap">
-                    <use xlink:href="#bootstrap"></use>
-                </svg>
-            </a>
-                <ul class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0">
-                    <li><a href="{{ url_for('index') }}" class="nav-link px-2 link-secondary">
-                        <ya-tr-span data-index="25-0" data-translated="true" data-source-lang="en" data-target-lang="ru"
-                                    data-value="AllPlaces" data-translation="Все места" data-ch="0" data-type="trSpan"
-                                    style="visibility: inherit !important;">Все места
-                        </ya-tr-span>
-                    </a></li>
-                    <li><a href="{{ url_for('post') }}" class="nav-link px-2 link-body-emphasis">
-                        <ya-tr-span data-index="26-0" data-translated="true" data-source-lang="en" data-target-lang="ru"
-                                    data-value="Post" data-translation="Добавить" data-ch="0" data-type="trSpan"
-                                    style="visibility: inherit !important;">Добавить
-                        </ya-tr-span>
-                    </a></li>
-                </ul>
-                <div class="dropdown-menu d-block position-static pt-0 mx-0 rounded-3 shadow overflow-hidden w-280px"
-                     data-bs-theme="light">
-                    <form class="p-2 mb-2 bg-body-tertiary border-bottom"><input type="search" class="form-control"
-                                                                                 autocomplete="false"
-                                                                                 placeholder="Введите для фильтрации...">
-                    </form>
-                    <ul class="list-unstyled mb-0">
-                        <li><a class="dropdown-item d-flex align-items-center gap-2 py-2" href="#"> <span
-                                class="d-inline-block bg-success rounded-circle p-1"></span>
-                            <ya-tr-span data-index="9-0" data-translated="true" data-source-lang="en"
-                                        data-target-lang="ru" data-value=" Action " data-translation=" Экшен "
-                                        data-ch="0" data-type="trSpan" data-selected="false"
-                                        style="visibility: inherit !important;"> Экшен
-                            </ya-tr-span>
-                        </a></li>
-                        <li><a class="dropdown-item d-flex align-items-center gap-2 py-2" href="#"> <span
-                                class="d-inline-block bg-primary rounded-circle p-1"></span>
-                            <ya-tr-span data-index="10-0" data-translated="true" data-source-lang="en"
-                                        data-target-lang="ru" data-value=" Another action "
-                                        data-translation=" Еще одно действие " data-ch="0" data-type="trSpan"
-                                        style="visibility: inherit !important;"> Еще одно действие
-                            </ya-tr-span>
-                        </a></li>
-                        <li><a class="dropdown-item d-flex align-items-center gap-2 py-2" href="#"> <span
-                                class="d-inline-block bg-danger rounded-circle p-1"></span>
-                            <ya-tr-span data-index="11-0" data-translated="true" data-source-lang="en"
-                                        data-target-lang="ru" data-value=" Something else here "
-                                        data-translation=" Здесь что-то еще " data-ch="0" data-type="trSpan"
-                                        style="visibility: inherit !important;"> Здесь что-то еще
-                            </ya-tr-span>
-                        </a></li>
-                        <li><a class="dropdown-item d-flex align-items-center gap-2 py-2" href="#"> <span
-                                class="d-inline-block bg-info rounded-circle p-1"></span>
-                            <ya-tr-span data-index="12-0" data-translated="true" data-source-lang="en"
-                                        data-target-lang="ru" data-value=" Separated link "
-                                        data-translation=" Разделенное звено " data-ch="0" data-type="trSpan"
-                                        data-selected="false" style="visibility: inherit !important;"> Разделенное звено
-                            </ya-tr-span>
-                        </a></li>
-                    </ul>
-                </div>
+            <div class="d-flex flex-wrap align-items-center justify-content-between">
+                <a href="/" class="d-flex align-items-center mb-2 mb-lg-0 link-body-emphasis text-decoration-none">
+                    <svg class="bi me-2" width="40" height="32" role="img" aria-label="Bootstrap">
+                        <use xlink:href="#bootstrap"></use>
+                    </svg>
+                </a>
 
+                <ul class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0">
+                    <li><a href="{{ url_for('index') }}" class="nav-link px-2 link-secondary">Главная</a></li>
+                    <li><a href="{{ url_for('post') }}" class="nav-link px-2 link-body-emphasis">Добавить</a></li>
+                </ul>
+
+                <div class="filter-container">
+                    <input type="radio" name="filter" class="filter-radio" id="filter-all" checked>
+                    <label for="filter-all" class="filter-label">Все</label>
+                    {% for category in categories %}
+                    <input type="radio" name="filter" class="filter-radio" id="filter-{{ category }}">
+                    <label for="filter-{{ category }}" class="filter-label">{{ category }}</label>
+                    {% endfor %}
+                </div>
             </div>
         </div>
     </header>
+
     <div class="place">
         {% block content %}{% endblock %}
     </div>
 </div>
+
+<script> // интерактивная фильтрация элементов на странице
+document.addEventListener('DOMContentLoaded', function() { // код выполнится только после полной загрузки структуры HTML-страницы
+    const filterRadios = document.querySelectorAll('.filter-radio'); // получение всех радиокнопок
+    const placeItems = document.querySelectorAll('.place-item'); // получение всех фильтруемых элементов
+
+    filterRadios.forEach(radio => {
+        radio.addEventListener('change', function() { // для каждой радиокнопки добавляется обработчик события change
+            const selectedValue = this.id.replace('filter-', ''); // извлекается значение фильтра из ID радиокнопки
+
+            // фильтрация элементов
+            placeItems.forEach(item => {
+                if (selectedValue === 'all' || item.dataset.category === selectedValue) {
+                    item.style.display = 'block';
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+        });
+    });
+});
+</script>
 </body>
 </html>
