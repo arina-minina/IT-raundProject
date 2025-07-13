@@ -2,6 +2,7 @@
     padding: 30px;
 }
 
+
 header {
     position: sticky;
     top: 0;
@@ -9,9 +10,12 @@ header {
     background: white;
 }
 
+
 .title_posts {
     text-align: center;
 }
+
+/* блок с изображением и описанием (карточка места) */
 .img-and-description {
     position: relative;
     padding-left: 320px;
@@ -29,10 +33,16 @@ header {
     margin-left: 20px;
 }
 
+
 .adres {
     padding-top: 20px;
 }
 
-.btn-btn-btn {
+
+.mb-3 {
+    padding-top: 20px;
+}
+
+.fs-5 {
     float: right;
 }
