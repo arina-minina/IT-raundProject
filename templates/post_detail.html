@@ -5,30 +5,124 @@
 {% block content %}
 <div class="container mt-5">
     <div class="row">
-        <div class="title_posts">
+        <div class="title_posts mb-4">
             <h1>{{ post.title }}</h1>
-            <p class="text-muted">Категория: {{ post.category }}</p></div>
-        <div class="img-and-description">
+            <p class="text-muted">Категория: {{ post.category }}</p>
+        </div>
+
+        <div class="mb-4" id="map" style="height: 300px; width: 100%;"></div>
+
+        <div class="img-and-description mb-4">
             {% if post.image_name %}
             <img src="{{ url_for('static', filename='uploads/' + post.image_name) }}"
                  class="img-fluid rounded mb-4"
-                 alt="{{ post.title }}">
-            {% endif %}
-            <p>{{ post.description }}<br><br>
-            <div class="btn-btn-btn">
-                <a href="{{ url_for('show_reviews', post_id=post.id) }}" class="btn btn-primary mt-3">Посмотреть все отзывы</a>
+                 alt="{{ post.title }}"
+                 style="max-height: 400px; object-fit: cover;">
+            {% else %}
+            <div class="bg-light p-5 text-center mb-4">
+                <p>Изображение отсутствует</p>
             </div>
-            </p>
+            {% endif %}
+            <p class="fs-5">{{ post.description }}</p>
         </div>
 
-        <div class="adres">
+        <div class="adres mb-4">
             <h3>Адрес</h3>
-            <p>{{ post.address }}</p></div>
-        <div>
-            <a href="{{ url_for('index') }}" class="btn btn-primary mt-3">
-                Назад к списку мест
+            <p class="fs-50">{{ post.address }}</p>
+        </div>
+
+        <div id="reviews" class="mt-555 mb-4">
+            <h3>Отзывы</h3>
+            <div class="d-flex align-items-center mb-3">
+                <div class="me-2">
+                    {% for i in range(1,6) %}
+                    {% if i <= avg_rating|round %}
+                    <i class="bi bi-star-fill text-warning"></i>
+                    {% elif i-0.5 <= avg_rating %}
+                    <i class="bi bi-star-half text-warning"></i>
+                    {% else %}
+                    <i class="bi bi-star text-warning"></i>
+                    {% endif %}
+                    {% endfor %}
+                </div>
+                <span class="fs-5 me-2">{{ "%.1f"|format(avg_rating) }}</span>
+                <small class="text-muted">({{ reviews|length }} отзывов)</small>
+            </div>
+        </div>
+
+        <form method="POST" class="mb-5 border p-3 rounded">
+            <h4 class="mb-3">Оставить отзыв</h4>
+            <div class="mb-3">
+                <label for="name" class="form-label">Ваше имя</label>
+                <input type="text" name="name" id="name" class="form-control" required>
+            </div>
+            <div class="mb-3">
+                <label for="rating" class="form-label">Оценка</label>
+                <select name="rating" id="rating" class="form-select" required>
+                    <option value="" disabled selected>Выберите оценку</option>
+                    {% for i in range(1, 6) %}
+                    <option value="{{ i }}">{{ i }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="mb-3">
+                <label for="text" class="form-label">Ваш отзыв</label>
+                <textarea name="text" id="text" rows="3" class="form-control" required></textarea>
+            </div>
+            <button type="submit" class="btn btn-primary">Отправить отзыв</button>
+        </form>
+
+        {% if reviews %}
+        {% for review in reviews %}
+        <div class="border-bottom mb-3 pb-3">
+            <div class="d-flex justify-content-between align-items-center mb-2">
+                <strong class="fs-5">{{ review.name }}</strong>
+                <div>
+                    {% for i in range(1,6) %}
+                    {% if i <= review.rating %}
+                    <i class="bi bi-star-fill text-warning"></i>
+                    {% else %}
+                    <i class="bi bi-star text-warning"></i>
+                    {% endif %}
+                    {% endfor %}
+                </div>
+            </div>
+            <p class="mb-2">{{ review.text }}</p>
+            <small class="text-muted">{{ review.created_at.strftime('%d.%m.%Y %H:%M') }}</small>
+            <p class="fs-5">Оценка: {{ review.rating }}</p>
+        </div>
+        {% endfor %}
+        {% else %}
+        <div class="alert alert-info">Отзывов пока нет. Будьте первым!</div>
+        {% endif %}
+
+        <div class="mt-4 mb-5">
+            <a href="{{ url_for('index') }}" class="btn btn-primary">
+                <i class="bi bi-arrow-left"></i> Назад к списку мест
             </a>
         </div>
     </div>
 </div>
+
+<script src="https://api-maps.yandex.ru/2.1/?apikey=dfcb1467-2945-4e9f-a1f4-2c3f0d47eef8&lang=ru_RU"></script>
+<script>
+    ymaps.ready(init); // инициализация карты
+
+    function init() {
+        // создание карты
+        const map = new ymaps.Map("map", {
+            center: [{{ post.lat }}, {{ post.lon }}], // центр карты
+            zoom: 15 // масштаб
+        });
+        // создание метки
+        const placemark = new ymaps.Placemark([{{ post.lat }}, {{ post.lon }}], {
+            // текст при наведении
+            hintContent: '{{ post.title }}',
+            // при нажатии
+            balloonContent: '{{ post.address }}'
+        });
+        // добавление метки на карту
+        map.geoObjects.add(placemark);
+    }
+</script>
 {% endblock %}
