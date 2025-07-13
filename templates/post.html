@@ -9,11 +9,56 @@
 <p>Здесь вы можете поделиться впечатлениями о месте в котором вы были, но которого еще нет на сайте.</p>
 
 <form method="post" class="form-post" enctype="multipart/form-data">
-    <input type="text" name="title" placeholder="Введите название места" class="form-post">
-    <input type="text" name="address" placeholder="Введите адрес места" class="form-post"><br><br>
-    <input type="text" name="category" placeholder="Введите категорию" class="form-post">
-    <input type="file" name="image" placeholder="Выберите картинку" class="form-post"><br><br>
-    <input type="text" name="description" placeholder="Опишите место" class="form-post">
+    <input type="text" name="title" placeholder="Введите название места" class="form-post" required>
+    <input type="text" name="address" id="address" placeholder="Введите адрес места" class="form-post" required>
+    <input type="hidden" name="lat" id="lat">
+    <input type="hidden" name="lon" id="lon"><br><br>
+    <input type="text" name="category" placeholder="Введите категорию" class="form-post" required>
+    <input type="file" name="image" accept="image/*" class="form-post"><br><br>
+    <textarea name="description" placeholder="Опишите место" class="form-post" required></textarea>
     <button class="btn-btn-success" type="submit">Добавить</button>
 </form>
+
+
+<script> // обрабатываем отправку формы с геокодированием адреса
+    document.querySelector('form').addEventListener('submit', async function(e) {
+        e.preventDefault(); // отменяет стандартную отправку формы (чтобы сначала выполнить геокодирование)
+
+        // получение и валидация адреса
+        const address = document.getElementById('address').value;
+        if (!address) {
+            alert('Пожалуйста, введите адрес');
+            return;
+        }
+
+        try {
+            // запрос на геокодирование
+            const response = await fetch(`/geocode?address=${encodeURIComponent(address)}`);
+            const data = await response.json();
+
+            // проверка координат
+            if (data.error) {
+                alert(data.error);
+                return;
+            }
+
+            if (!data.lat || !data.lon) {
+                alert('Не удалось определить координаты для этого адреса');
+                return;
+            }
+
+            // автоматическое заполнение скрытых полей (координат)
+            document.getElementById('lat').value = data.lat;
+            document.getElementById('lon').value = data.lon;
+
+
+            this.submit(); // отправка формы
+
+        // обработка ошибок
+        } catch (error) {
+            console.error('Ошибка:', error);
+            alert('Произошла ошибка при определении координат');
+        }
+    });
+</script>
 {% endblock %}
