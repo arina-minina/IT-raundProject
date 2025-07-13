@@ -8,42 +8,23 @@
 <h1>Посмотри, куда можно сходить!</h1>
 <p>Здесь отображаются места, которые можно посетить, находясь в Сириусе.</p>
 
-
 <div class="row mb-2">
-
-    {% for post in index %}
-    <div class="col-md-6">
+    {% for post in posts %}
+    <div class="col-md-6 place-item" data-category="{{ post.category }}">
         <div class="row g-0 border rounded overflow-hidden flex-md-row mb-4 shadow-sm h-md-250 position-relative">
-            <div class="col p-4 d-flex flex-column position-static"><strong
-                    class="d-inline-block mb-2 text-primary-emphasis">
-                <ya-tr-span data-index="19-0" data-translated="true" data-source-lang="en" data-target-lang="ru"
-                            data-value="Category" data-translation="Категория" data-ch="1" data-type="trSpan"
-                            style="visibility: inherit !important;">{{ post.category }}
-                </ya-tr-span>
-            </strong>
-                <h3 class="mb-0">
-                    <ya-tr-span data-index="20-0" data-translated="true" data-source-lang="en" data-target-lang="ru"
-                                data-value="name_place" data-translation="Название места" data-ch="0"
-                                data-type="trSpan" style="visibility: inherit !important;">{{ post.title }}
-                    </ya-tr-span>
-                </h3><br>
-                <p class="card-text mb-auto">
-                    <ya-tr-span data-index="22-0" data-translated="true" data-source-lang="en" data-target-lang="ru"
-                                data-value="address"
-                                data-translation="Адрес"
-                                data-ch="0" data-type="trSpan" style="visibility: inherit !important;">{{ post.address
-                        }}
-                    </ya-tr-span>
-                </p>
-                <a href="{{ url_for('show_post', post_id=post.id) }}" class="icon-link gap-1 icon-link-hover stretched-link">
-                    <ya-tr-span data-index="23-0" data-translated="true" data-source-lang="en" data-target-lang="ru"
-                                data-value="dalee" data-translation="Узнать подробнее" data-ch="0"
-                                data-type="trSpan" style="visibility: inherit !important;">Узнать подробнее
-                    </ya-tr-span>
+            <div class="col p-4 d-flex flex-column position-static">
+                <strong class="d-inline-block mb-2 text-primary-emphasis">{{ post.category }}</strong>
+                <h3 class="mb-0">{{ post.title }}</h3>
+                <br>
+                <p class="card-text mb-auto">{{ post.address }}</p>
+                <a href="{{ url_for('show_post', post_id=post.id) }}"
+                   class="icon-link gap-1 icon-link-hover stretched-link">
+                    Узнать подробнее
                     <svg class="bi" aria-hidden="true">
                         <use xlink:href="#chevron-right"></use>
                     </svg>
-                </a></div>
+                </a>
+            </div>
             <div class="col-auto d-none d-lg-block">
                 {% if post.image_name %}
                 <img src="{{ url_for('static', filename='uploads/' + post.image_name) }}"
@@ -65,4 +46,60 @@
     </div>
     {% endfor %}
 </div>
+
+<div id="map" style="width: 100%; height: 400px;"></div>
+
+<script src="https://api-maps.yandex.ru/2.1/?apikey=dfcb1467-2945-4e9f-a1f4-2c3f0d47eef8&lang=ru_RU"></script>
+
+<script>
+    // инициализируем карту
+    ymaps.ready(function() {
+  const map = new ymaps.Map("map", {
+    center: [43.4021, 39.9633], // координаты Сириуса по умолчанию
+    zoom: 12 // средний масштаб по умолчанию
+  });
+
+  // создаем коллекцию меток
+  const objectManager = new ymaps.ObjectManager({
+    clusterize: true, // группировка меток при увеличении
+    gridSize: 64
+  });
+
+  // добавляем все места из базы данных
+  const places = [
+    {% for place in posts %}
+      {% if place.lat and place.lon %}
+      {
+        type: "Feature",
+        id: {{ place.id }},
+        geometry: {
+          type: "Point",
+          coordinates: [{{ place.lat }}, {{ place.lon }}]
+        },
+        properties: {
+          hintContent: "{{ place.title }}",
+          balloonContent: `
+            <b>{{ place.title }}</b><br>
+            <i>{{ place.category }}</i><br>
+            {{ place.address }}<br>
+            <a href="{{ url_for('show_post', post_id=place.id) }}">Подробнее</a>
+          `
+        }
+      },
+      {% endif %}
+    {% endfor %}
+  ];
+  // добавляем метки на карту
+  objectManager.add(places);
+  map.geoObjects.add(objectManager);
+
+  // автоматически подбираем оптимальный масштаб
+  if (places.length > 0) {
+    map.setBounds(objectManager.getBounds(), {
+      checkZoomRange: true,
+      zoomMargin: 50
+    });
+  }
+});
+</script>
 {% endblock %}
